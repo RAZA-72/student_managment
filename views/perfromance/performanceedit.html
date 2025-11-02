@@ -1,0 +1,178 @@
+{{> header }}
+{{> sidebar }}
+
+<main id="main" class="main bg-gray-50 min-h-screen">
+  <div class="max-w-4xl mx-auto py-8 px-4">
+    <!-- Header -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+      <h1 class="text-3xl font-bold text-gray-900 flex items-center">
+        <i class="fas fa-edit text-blue-600 mr-3"></i>
+        Edit Student Performance
+      </h1>
+      <p class="text-gray-600 mt-2">
+        Update and evaluate student performance across different metrics
+      </p>
+    </div>
+
+    <!-- Form - Using POST method with proper ID -->
+    <form id="editPerformanceForm" class="bg-white border border-gray-200 shadow-sm rounded-lg p-6 mb-6">
+      <!-- Hidden ID Field - THIS IS CRITICAL -->
+      <input type="hidden" id="performance_id" value="{{performance.id}}">
+      
+      <!-- Student Selection -->
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Select Student</label>
+        <select id="student_id" required
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+          {{#each students}}
+            <option value="{{this.sr_id}}" {{#eq this.sr_id ../performance.student_id}}selected{{/eq}}>
+              {{this.Student_id}} - {{this.name}} ({{this.course}})
+            </option>
+          {{/each}}
+        </select>
+      </div>
+
+      <!-- Academic Info -->
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Academic Year</label>
+        <input type="text" id="academic_year" required value="{{performance.academic_year}}"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+
+      <!-- Hidden Semester Field -->
+      <input type="hidden" id="semester" value="{{performance.semester}}">
+
+      <!-- Performance Metrics -->
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">
+          Performance Metrics (Rate 0-10)
+        </h3>
+
+        <!-- Behaviour -->
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Behaviour & Discipline: 
+            <span id="behaviour-value" class="text-blue-600 font-semibold">{{performance.behaviour_discipline}}</span>
+          </label>
+          <input type="range" id="behaviour_discipline" min="0" max="10" step="0.5" 
+            value="{{performance.behaviour_discipline}}" class="w-full performance-slider" 
+            oninput="document.getElementById('behaviour-value').textContent = this.value">
+        </div>
+
+        <!-- Academic -->
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Academic Performance: 
+            <span id="academic-value" class="text-blue-600 font-semibold">{{performance.academic_performance}}</span>
+          </label>
+          <input type="range" id="academic_performance" min="0" max="10" step="0.5" 
+            value="{{performance.academic_performance}}" class="w-full performance-slider"
+            oninput="document.getElementById('academic-value').textContent = this.value">
+        </div>
+
+        <!-- Extracurricular -->
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Extracurricular Participation: 
+            <span id="extra-value" class="text-blue-600 font-semibold">{{performance.extracurricular_participation}}</span>
+          </label>
+          <input type="range" id="extracurricular_participation" min="0" max="10" step="0.5" 
+            value="{{performance.extracurricular_participation}}" class="w-full performance-slider"
+            oninput="document.getElementById('extra-value').textContent = this.value">
+        </div>
+
+        <!-- Punctuality -->
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Punctuality in Tasks: 
+            <span id="punctuality-value" class="text-blue-600 font-semibold">{{performance.punctuality}}</span>
+          </label>
+          <input type="range" id="punctuality" min="0" max="10" step="0.5" 
+            value="{{performance.punctuality}}" class="w-full performance-slider"
+            oninput="document.getElementById('punctuality-value').textContent = this.value">
+        </div>
+      </div>
+
+      <!-- Remarks -->
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Remarks</label>
+        <textarea id="remarks" rows="3"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">{{performance.remarks}}</textarea>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex justify-end space-x-3">
+        <a href="/performance"
+          class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition">
+          Cancel
+        </a>
+        <button type="button" id="updatePerformanceBtn"
+          class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition flex items-center">
+          <i class="fas fa-save mr-2"></i>
+          Update Performance
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("updatePerformanceBtn").addEventListener("click", async () => {
+      // Debug: Check if we have the performance ID
+      const performanceId = document.getElementById("performance_id");
+      console.log("Performance ID:", performanceId ? performanceId.value : "NOT FOUND");
+      
+      const payload = {
+        id: performanceId.value,
+        student_id: document.getElementById("student_id").value,
+        semester: document.getElementById("semester").value,
+        academic_year: document.getElementById("academic_year").value,
+        behaviour_discipline: document.getElementById("behaviour_discipline").value,
+        academic_performance: document.getElementById("academic_performance").value,
+        extracurricular_participation: document.getElementById("extracurricular_participation").value,
+        punctuality: document.getElementById("punctuality").value,
+        remarks: document.getElementById("remarks").value
+      };
+
+      console.log("Sending payload:", payload);
+
+      try {
+        const res = await fetch("/updateperformance", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success) {
+            alert("✅ " + data.message);
+            window.location.href = "/performancelist";
+          } else {
+            alert("⚠️ " + data.message);
+          }
+        } else {
+          alert("❌ Server error!");
+        }
+      } catch (err) {
+        console.error("Error:", err);
+        alert("❌ Something went wrong!");
+      }
+    });
+  </script>
+
+  <style>
+    .performance-slider {
+      height: 6px;
+      background: #d1d5db;
+      border-radius: 5px;
+      outline: none;
+    }
+
+    .performance-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      background: #3b82f6;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+  </style>
+</main>
+
+{{> footer }}

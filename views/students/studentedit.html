@@ -1,0 +1,127 @@
+{{> header}}
+{{> sidebar}}
+
+<main id="main" class="main">
+  <div class="p-3">
+    <div class="modal-content shadow-sm border rounded">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Edit Student</h5>
+      </div>
+      <div class="modal-body">
+        <form id="editStudentForm">
+          <!-- Hidden ID -->
+          <input type="hidden" id="student_id" value="{{student.sr_id}}" />
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Full Name *</label>
+            <input type="text" class="form-control" id="name" value="{{student.name}}" required />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Email *</label>
+            <input type="email" class="form-control" id="email" value="{{student.email}}" required />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Phone</label>
+            <input type="text" class="form-control" id="phone" value="{{student.phone}}" />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Address</label>
+            <textarea class="form-control" id="address">{{student.address}}</textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Course</label>
+            <select class="form-control" id="course">
+              <option value="">Select Course</option>
+              <option value="BCA" {{#if (eq student.course "BCA")}}selected{{/if}}>BCA</option>
+              <option value="MCA" {{#if (eq student.course "MCA")}}selected{{/if}}>MCA</option>
+              <option value="B.TECH" {{#if (eq student.course "B.TECH")}}selected{{/if}}>B.TECH</option>
+              <option value="M.TECH" {{#if (eq student.course "M.TECH")}}selected{{/if}}>M.TECH</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Semester</label>
+            <select class="form-control" id="semester">
+              <option value="">Select Semester</option>
+              {{#each semesters}}
+                <option value="{{this}}" {{#if (eq ../student.semester this)}}selected{{/if}}>{{this}}</option>
+              {{/each}}
+            </select>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="updateStudentBtn">💾 Update</button>
+        <button type="button" class="btn btn-danger" id="deleteStudentBtn">🗑️ Delete</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  // ✅ Update Student
+  document.getElementById("updateStudentBtn").addEventListener("click", async () => {
+    const payload = {
+      id: document.getElementById("student_id").value.trim(),
+      name: document.getElementById("name").value.trim(),
+      email: document.getElementById("email").value.trim(),
+      phone: document.getElementById("phone").value.trim(),
+      address: document.getElementById("address").value.trim(),
+      course: document.getElementById("course").value.trim(),
+      semester: document.getElementById("semester").value.trim(),
+    };
+
+    if (!payload.name || !payload.email) {
+      alert("⚠️ Name and Email are required!");
+      return;
+    }
+
+    try {
+      const res = await fetch("/updatestudent", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        alert("✅ " + data.message);
+        window.location.href = "/studentlist";
+      } else {
+        alert("⚠️ " + data.message);
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      alert("❌ Something went wrong!");
+    }
+  });
+
+  // 🗑️ Delete Student
+  document.getElementById("deleteStudentBtn").addEventListener("click", async () => {
+    if (!confirm("Are you sure you want to delete this student?")) return;
+
+    const id = document.getElementById("student_id").value.trim();
+
+    try {
+      const res = await fetch(`/deletestudent/${id}`, { method: "DELETE" });
+      const data = await res.json();
+
+      if (data.success) {
+        alert("🗑️ " + data.message);
+        window.location.href = "/studentlist";
+      } else {
+        alert("⚠️ " + data.message);
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      alert("❌ Something went wrong!");
+    }
+  });
+</script>
+
+{{> footer}}

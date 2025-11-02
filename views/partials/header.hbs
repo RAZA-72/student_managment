@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STUDENT MANAGEMENT SYSTEM - Dashboard</title>
+
+  <!-- Favicons -->
+  <link href="/img/images.jpeg" rel="icon">
+  <link href="/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="/css/font.css" rel="stylesheet" />
+
+  <!-- Vendor CSS Files -->
+  <link href="/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="/css/jquery.dataTables.min.css" rel="stylesheet" />
+  <link href="/css/buttons.dataTables.min.css" rel="stylesheet" />
+  <link href="/css/bootstrap-icons.css" rel="stylesheet" />
+  <link href="/css/select2.min.css" rel="stylesheet" />
+  <link href="/css/aos.css" rel="stylesheet" />
+  <link href="/css/jquery-ui.css" rel="stylesheet" />
+
+  <!-- Template Main CSS File -->
+  <link href="/css/style.css" rel="stylesheet">
+</head>
+
+
+
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="dashboard" class="logo d-flex align-items-center">
+        <img src="/img/images.jpeg" alt="logo" class="w-25">
+        <span class="ms-2">Student Management</span>
+      </a>
+      <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div><!-- End Logo -->
+
+    <nav class="header-nav ms-auto">
+      <ul class="d-flex align-items-center">
+        <li class="nav-item dropdown pe-3">
+          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" id="profileDropdown" role="button"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="/img/default-user.jpg" alt="Profile" class="rounded-circle">
+            <span class="d-none d-md-block dropdown-toggles ps-2">
+            </span>
+          </a>
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile" aria-labelledby="profileDropdown">
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="<?= base_url('profile') ?>">
+                <i class="bi bi-person"></i>
+                <span>My Profile</span>
+              </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="<?= base_url('change-password') ?>">
+                <i class="bi bi-key"></i>
+                <span>Change Password</span>
+              </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="<?= base_url('logout') ?>">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Logout</span>
+              </a>
+            </li>
+          </ul>
+        </li><!-- End Profile Nav -->
+      </ul>
+    </nav><!-- End Icons Navigation -->
+  </header><!-- End Header -->

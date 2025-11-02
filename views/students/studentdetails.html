@@ -1,0 +1,399 @@
+{{> header }}
+{{> sidebar }}
+
+<main id="main" class="main">
+  <div class="p-3">
+    <div class="main-container">
+
+      <div class="card shadow-sm mb-4" id="printSection">
+        <div class="card-header d-flex justify-content-between align-items-center bg-primary text-white">
+          <h5 class="mb-0">🎓 Student Details</h5>
+          <div>
+            <button id="generateReportBtn" class="btn btn-light btn-sm me-2">
+              🧾 Generate Report
+            </button>
+            <a href="/studentlist" class="btn btn-outline-light btn-sm">
+              🔙 Back to List
+            </a>
+          </div>
+        </div>
+
+        <div class="card-body">
+          {{#if student}}
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <div class="info-card p-3 rounded bg-light">
+                  <label class="form-label fw-bold text-primary">Student ID</label>
+                  <p class="fs-5 fw-semibold text-dark">{{student.Student_id}}</p>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <div class="info-card p-3 rounded bg-light">
+                  <label class="form-label fw-bold text-primary">Full Name</label>
+                  <p class="fs-5 fw-semibold text-dark">{{student.name}}</p>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <div class="info-card p-3 rounded bg-light">
+                  <label class="form-label fw-bold text-primary">Email Address</label>
+                  <p class="fs-5 fw-semibold text-dark">{{student.email}}</p>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <div class="info-card p-3 rounded bg-light">
+                  <label class="form-label fw-bold text-primary">Phone Number</label>
+                  <p class="fs-5 fw-semibold text-dark">{{student.phone}}</p>
+                </div>
+              </div>
+              <div class="col-12 mb-3">
+                <div class="info-card p-3 rounded bg-light">
+                  <label class="form-label fw-bold text-primary">Address</label>
+                  <p class="fs-5 fw-semibold text-dark">{{student.address}}</p>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <div class="info-card p-3 rounded bg-light">
+                  <label class="form-label fw-bold text-primary">Course</label>
+                  <p class="fs-5 fw-semibold text-dark">{{student.course}}</p>
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <div class="info-card p-3 rounded bg-light">
+                  <label class="form-label fw-bold text-primary">Semester</label>
+                  <p class="fs-5 fw-semibold text-dark">{{student.semester}}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 📊 Performance Section -->
+            <div class="card shadow-sm mt-4 border-0">
+              <div class="card-header bg-success text-white">
+                <h5 class="mb-0">📊 Performance Records</h5>
+              </div>
+              <div class="card-body">
+                {{#if performances.length}}
+                <div class="table-responsive">
+                  <table class="table table-bordered table-striped table-hover">
+                    <thead class="table-dark">
+                      <tr>
+                        <th>Semester</th>
+                        <th>Academic Year</th>
+                        <th>Behaviour</th>
+                        <th>Academic</th>
+                        <th>Extracurricular</th>
+                        <th>Punctuality</th>
+                        <th>Total Score</th>
+                        <th>Percentage</th>
+                        <th>Grade</th>
+                        <th>Remarks</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {{#each performances}}
+                        <tr>
+                          <td class="fw-semibold">{{semester}}</td>
+                          <td>{{academic_year}}</td>
+                          <td>
+                            <div class="progress" style="height: 8px;">
+                              <div class="progress-bar bg-info" style="width: {{behaviour_discipline}}%"></div>
+                            </div>
+                            <small>{{behaviour_discipline}}%</small>
+                          </td>
+                          <td>
+                            <div class="progress" style="height: 8px;">
+                              <div class="progress-bar bg-primary" style="width: {{academic_performance}}%"></div>
+                            </div>
+                            <small>{{academic_performance}}%</small>
+                          </td>
+                          <td>
+                            <div class="progress" style="height: 8px;">
+                              <div class="progress-bar bg-warning" style="width: {{extracurricular_participation}}%"></div>
+                            </div>
+                            <small>{{extracurricular_participation}}%</small>
+                          </td>
+                          <td>
+                            <div class="progress" style="height: 8px;">
+                              <div class="progress-bar bg-success" style="width: {{punctuality}}%"></div>
+                            </div>
+                            <small>{{punctuality}}%</small>
+                          </td>
+                          <td class="fw-bold">{{total_score}}</td>
+                          <td class="fw-bold text-primary">{{percentage}}%</td>
+                          <td>
+                            <span class="badge grade-badge" data-grade="{{grade}}">
+                              {{grade}}
+                            </span>
+                          </td>
+                          <td class="fst-italic">{{remarks}}</td>
+                        </tr>
+                      {{/each}}
+                    </tbody>
+                  </table>
+                </div>
+                {{else}}
+                  <div class="text-center text-muted py-5">
+                    <i class="bi bi-exclamation-circle fs-1 d-block mb-3"></i>
+                    <p>No performance records found for this student.</p>
+                  </div>
+                {{/if}}
+              </div>
+            </div>
+          {{else}}
+            <div class="text-center text-muted py-5">
+              <i class="bi bi-exclamation-circle fs-1 d-block mb-3"></i>
+              <p>No student details available.</p>
+            </div>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ✅ Enhanced Print Script -->
+<script>
+  // Grade badge coloring function
+  function applyGradeColors() {
+    document.querySelectorAll('.grade-badge').forEach(badge => {
+      const grade = badge.getAttribute('data-grade');
+      if (grade === 'A+' || grade === 'A') {
+        badge.classList.add('bg-success');
+      } else if (grade === 'B+' || grade === 'B') {
+        badge.classList.add('bg-info');
+      } else if (grade === 'C+' || grade === 'C') {
+        badge.classList.add('bg-warning');
+      } else {
+        badge.classList.add('bg-danger');
+      }
+    });
+  }
+
+  // Apply grade colors when page loads
+  document.addEventListener('DOMContentLoaded', applyGradeColors);
+
+  document.getElementById("generateReportBtn").addEventListener("click", () => {
+    const content = document.getElementById("printSection").innerHTML;
+
+    // Create popup window
+    const printWindow = window.open("", "", "width=900,height=700");
+
+    // Generate current date/time
+    const now = new Date();
+    const date = now.toLocaleDateString();
+    const time = now.toLocaleTimeString();
+
+    // Build report layout
+    const html = `
+      <html>
+      <head>
+        <title>Student Performance Report</title>
+        <style>
+          body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            background: #fff;
+            color: #000;
+            line-height: 1.4;
+          }
+          .university-header {
+            text-align: center;
+            border-bottom: 3px double #000;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+          }
+          .university-header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a365d;
+          }
+          .university-header h2 {
+            margin: 5px 0;
+            font-size: 18px;
+            font-weight: normal;
+            color: #2d3748;
+          }
+          .report-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+          }
+          .report-header h3 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: bold;
+            color: #2d3748;
+          }
+          .report-header p {
+            margin: 5px 0;
+            font-size: 14px;
+          }
+          .student-info {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #1a365d;
+          }
+          .student-info h4 {
+            margin-top: 0;
+            color: #1a365d;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 8px;
+          }
+          .info-row {
+            display: flex;
+            margin-bottom: 8px;
+          }
+          .info-label {
+            font-weight: bold;
+            width: 150px;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 14px;
+          }
+          table, th, td {
+            border: 1px solid #666;
+          }
+          th, td {
+            padding: 10px 8px;
+            text-align: center;
+          }
+          th {
+            background-color: #1a365d;
+            color: white;
+            font-weight: bold;
+          }
+          tr:nth-child(even) {
+            background-color: #f2f2f2;
+          }
+          .grade-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: white;
+          }
+          .grade-A { background-color: #28a745 !important; }
+          .grade-B { background-color: #17a2b8 !important; }
+          .grade-C { background-color: #ffc107 !important; color: black !important; }
+          .grade-D { background-color: #dc3545 !important; }
+          .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 12px;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+          }
+          .print-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background: #1a365d;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+          }
+          .print-btn:hover {
+            background: #2d3748;
+          }
+          .signature-area {
+            margin-top: 40px;
+            display: flex;
+            justify-content: space-between;
+          }
+          .signature-box {
+            text-align: center;
+            width: 45%;
+          }
+          .signature-line {
+            border-top: 1px solid #000;
+            margin-top: 60px;
+            padding-top: 5px;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="university-header">
+          <h1>Sam Higginbottom University of Agriculture, Technology and Sciences</h1>
+          <h2>Department of Student Affairs</h2>
+        </div>
+        
+        <div class="report-header">
+          <h3>🎓 Student Performance Report</h3>
+          <p>Generated on ${date} at ${time}</p>
+        </div>
+        
+        <div class="student-info">
+          <h4>Student Information</h4>
+          <div class="info-row">
+            <div class="info-label">Student ID:</div>
+            <div>${document.querySelector('.info-card:first-child p').textContent}</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Full Name:</div>
+            <div>${document.querySelectorAll('.info-card')[1].querySelector('p').textContent}</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Course:</div>
+            <div>${document.querySelectorAll('.info-card')[5].querySelector('p').textContent}</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Current Semester:</div>
+            <div>${document.querySelectorAll('.info-card')[6].querySelector('p').textContent}</div>
+          </div>
+        </div>
+        
+        <div>
+          <h4 style="text-align: center; color: #1a365d;">Academic Performance</h4>
+          ${document.querySelector('.table-responsive') ? document.querySelector('.table-responsive').innerHTML : '<p>No performance data available</p>'}
+        </div>
+        
+        <div class="signature-area">
+          <div class="signature-box">
+            <div class="signature-line"></div>
+            <p>Class Advisor Signature</p>
+          </div>
+          <div class="signature-box">
+            <div class="signature-line"></div>
+            <p>Head of Department Signature</p>
+          </div>
+        </div>
+        
+        <button class="print-btn" onclick="window.print()">🖨 Print Report</button>
+        
+        <div class="footer">
+          <p>© ${new Date().getFullYear()} Sam Higginbottom University of Agriculture, Technology and Sciences</p>
+          <p>This is an official document generated by the Student Management System</p>
+        </div>
+
+        <script>
+          // Apply grade colors in print view
+          document.querySelectorAll('.grade-badge').forEach(badge => {
+            const grade = badge.getAttribute('data-grade');
+            if (grade === 'A+' || grade === 'A') {
+              badge.classList.add('grade-A');
+            } else if (grade === 'B+' || grade === 'B') {
+              badge.classList.add('grade-B');
+            } else if (grade === 'C+' || grade === 'C') {
+              badge.classList.add('grade-C');
+            } else {
+              badge.classList.add('grade-D');
+            }
+          });
+        <\/script>
+      </body>
+      </html>
+    `;
+
+    printWindow.document.write(html);
+    printWindow.document.close();
+  });
+</script>
+
+{{> footer }}
